@@ -3,3 +3,8 @@
 .point {
   cursor: pointer;
 }
+.tag-avatar{
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+}
