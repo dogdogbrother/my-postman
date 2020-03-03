@@ -17,12 +17,13 @@ const CreateCollection = (props) => {
       if(err) return
       http({
         method:'post',
-        url:'/api/project/create',
+        url:`/api/collection/${props.match.params.id}`,
         parm: {
-          ...values,
-          project: props.match.params.id
+          ...values
         }
       }).then(res => {
+        props.upList(res)
+        props.changeState()
         setLoading(false)
       }).catch(err => {
         setLoading(false)
@@ -55,14 +56,14 @@ const CreateCollection = (props) => {
     >
       <Form { ...formItemLayout } className="login-form">
         <Form.Item label="集合名字">
-          {getFieldDecorator('collectionName', {
+          {getFieldDecorator('name', {
             rules: [{ required: true, message: '请输入项目名' }],
           })(
             <Input/>
           )}
         </Form.Item>
         <Form.Item label="集合描述">
-        {getFieldDecorator('collectionDescribe')(
+        {getFieldDecorator('describe')(
           <TextArea/>
         )}
         </Form.Item>

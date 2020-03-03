@@ -16,7 +16,7 @@ const Register = (props) => {
         }).then(res => {
           // 这里缺点东西，把返回的自身信息告诉全世界
           props.history.push('/')
-        }).catch(err => {
+        }).catch(() => {
           message.error('注册失败')
         })
       }
@@ -90,9 +90,9 @@ const Register = (props) => {
         </Form.Item>
         <Form.Item>
           <div className="flex-between">
-            <a href="" onClick={ ()=>{ props.history.push('/login') } }>
+            <span onClick={ ()=>{ props.history.push('/login') } } style={{ color: "#1890ff", cursor: "pointer" }}>
               去登录
-            </a>
+            </span>
           </div>
           <Button type="primary" size="large" block htmlType="submit" className="login-form-button">
             注册

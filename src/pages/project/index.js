@@ -4,7 +4,7 @@
   *  @author: sl
   *  @update :sl(2020/03/02)
 */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 // import { Button, Card, Icon, Avatar, Modal, Tooltip } from 'antd';
 
 import Header from '../../layout/header'
@@ -13,7 +13,7 @@ import Aside from '../../layout/aside'
 import { Main } from './style'
 
 
-const Project = (props) => {
+const Project = () => {
   return(
     <div>
       <Header/>

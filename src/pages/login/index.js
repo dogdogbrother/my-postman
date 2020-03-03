@@ -50,12 +50,12 @@ const Login = (props) => {
         </Form.Item>
         <Form.Item>
           <div className="flex-between">
-            <a className="login-form-forgot" href="" onClick={ ()=>{ props.history.push('/register') } }>
+            <span className="login-form-forgot" onClick={()=>{ props.history.push('/register') }} style={{ color: "#1890ff", cursor: "pointer" }}>
               现在注册
-            </a>
-            <a className="login-form-forgot" href="">
+            </span>
+            <span className="login-form-forgot" style={{ color: "#1890ff", cursor: "pointer" }}>
               忘记密码
-            </a>
+            </span>
           </div>
           <Button type="primary" size="large" block htmlType="submit" className="login-form-button">
             登录

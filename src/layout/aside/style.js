@@ -59,6 +59,7 @@ export const CollectionList = styled.ul`
     }
     .collection-name{
       margin-left: 5px;
+      flex:1;
       p{
         margin: 0;
       }

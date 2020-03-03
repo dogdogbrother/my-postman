@@ -7,10 +7,6 @@ import { DeveloperList } from './style'
 
 const { Option } = Select;
 
-
-
-
-
 const InviteMember = (props) => {
   const [ optionList, setOptionList] = useState([]);
   const [ developerlist, setDeveloperlist] = useState([])
@@ -58,15 +54,11 @@ const InviteMember = (props) => {
   };
 
   useEffect(() => {
-    console.log(props.state);
-    
     if (!props.state) return
     http({
       method:'get',
       url:`/api/project/member/${props.project}`
     }).then(res => {
-      // 这里缺点东西
-      console.log(res);
       setDeveloperlist(res)
     })
   }, [props.state])
@@ -92,7 +84,7 @@ const InviteMember = (props) => {
             >
               { optionList.map(item => (
                 <Option value={item._id} key={item._id}>
-                  <img src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" className="tag-avatar"></img>
+                  <img src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" className="tag-avatar" alt="avatar"></img>
                   {item.username}
                 </Option>
               )) }
