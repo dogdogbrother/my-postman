@@ -48,12 +48,14 @@ export const AddCollection = styled.div`
 
 export const CollectionList = styled.ul`
   margin: 0;
-  .unfold-controller{
-    width: 100%;
-    background-color: #fffeee;
-    padding: 10px;
+  .collection{
     border-bottom: 1px solid #eee;
     cursor: pointer;
+  }
+  .unfold-controller{
+    background-color: #fffeee;
+    width: 100%;
+    padding: 10px;
     i{
       margin: 10px 3px 0 0;
     }
@@ -71,5 +73,28 @@ export const CollectionList = styled.ul`
         color: #999;
       }
     }
+  }
+`
+
+export const FolderAndRequest = styled.div`
+  p{
+    margin-bottom: 0;
+  }
+  .folders{
+    padding-left: 10px;
+    i{
+      margin-right: 3px;
+    }
+    .folders-name{
+      line-height: 1;
+    }
+    .folders-item{
+      padding: 10px 0 10px 0;
+    }
+  }
+  .request{
+    padding: 10px 0 10px 10px;
+    line-height: 1;
+    font-size: 14px;
   }
 `
