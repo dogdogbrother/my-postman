@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, Form, Input } from 'antd';
 
 import http from '../../../api'
+import { helperCloseAndReset } from '../../../tool/helpers'
 
 const Createproject = (props) => {
   const [ loading, setLoading ] = useState(false);
@@ -18,9 +19,8 @@ const Createproject = (props) => {
         url:'/api/project/create',
         parm:values
       }).then(res => {
-        // 这里缺点东西
         props.upList(res);
-        props.changeState()
+        helperCloseAndReset(props)
         setLoading(false)
       }).catch(err => {
         setLoading(false)
@@ -41,9 +41,9 @@ const Createproject = (props) => {
     <Modal
       visible={ props.state }
       title="新建项目"
-      onCancel={ () => { props.changeState() } }
+      onCancel={ helperCloseAndReset(props) }
       footer={[
-        <Button key="back" onClick={ () => props.changeState() }>
+        <Button key="back" onClick={ helperCloseAndReset(props) }>
           取消
         </Button>,
         <Button key="submit" type="primary" loading={ loading } onClick={ handleSubmit }>

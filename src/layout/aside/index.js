@@ -9,11 +9,13 @@ import { Input, Icon, Modal } from 'antd';
 
 import http from '../../api'
 import { getParentNode } from '../../tool/returnFn'
+import { helperFindByAttributeAndAssign, helperFindByValueAndAssign } from '../../tool/helpers'
 import { CustomAside, CustomTabs, AddCollection, CollectionList, FolderAndRequest } from './style'
 
 import FormCreateCollection from '../../components/project/create-collection'
 import FormCreateFolder from '../../components/project/create-folder'
 import FormEditFolder from '../../components/project/edit-collection'
+
 
 const { remote } = window.require('electron')
 
@@ -43,7 +45,6 @@ const Aside = (props) => {
 
   const setCollectionStatus = (collection)=> { 
     collection.status = !collection.status
-    // 没法触发监听，这样弄一下
     let newCollectionList = collectionList.concat([])
     setCollectionList(newCollectionList)
   }
@@ -68,8 +69,8 @@ const Aside = (props) => {
   }
   const deleteFolderConfirm = (id, collectionId) => {
     confirm({
-      title: '是否确认删除此集合?',
-      content: '删除集合后，文件夹和接口将不可找回。',
+      title: '是否确认删除此文件夹?',
+      content: '删除文件夹后，其下的文件夹和接口将不可找回。',
       okText: '确认删除',
       okType: 'danger',
       cancelText: '取消',
@@ -96,24 +97,21 @@ const Aside = (props) => {
       }
     })
   }
+  
   // 这个函数是从添加dialog里面弹出后的内容，根据记录的id，来递归出真正的父级，然后让他status为true，并且push
   // 值得注意的是，这里的递归找父级的操作是可以复用的，后面要抽出来的
   const createFolder = (folder) => {
-    let parent = null
-    const recursion = (arr) => {
-      arr.forEach(item => {
-        if (item._id === casuallyProps.id) {
-          parent = item
-        } else {
-          recursion(item.children)
-        }
-      })
-    }
-    recursion(collectionList)
+    let parent = helperFindByValueAndAssign(collectionList, casuallyProps.id)
     parent.status = true
     parent.children.push(folder)
     let newCollectionList = collectionList.concat([])
     setCollectionList(newCollectionList)
+  }
+
+  // 用于重命名集合和文件夹
+  const renameCollectionAndFolder = (item) => {
+    const updateList = helperFindByAttributeAndAssign(collectionList, item, '_id', ['name', 'describe'])
+    setCollectionList(updateList)
   }
 
   useEffect(() => {
@@ -127,16 +125,8 @@ const Aside = (props) => {
       click: () => {
         const parentElement = getParentNode(clickedElement.current, 'collection-item')
         // 我要拿到id就够了，递归找到这个原对象，赋值给临时变量，拿去当props
-        const recursionFind = (arr) => {
-          arr.forEach(item => {
-            if (item._id === parentElement.dataset.id) {
-              setCasuallyProps(item)
-            } else {
-              recursionFind(item.children)
-            }
-          })
-        }
-        recursionFind(collectionList)
+        const update = helperFindByValueAndAssign(collectionList, parentElement.dataset.id)
+        setCasuallyProps(update)
         setEditCollectionOrFolderModal(true)
       }
     }))
@@ -160,7 +150,6 @@ const Aside = (props) => {
       click: () => {
         const parentElement = getParentNode(clickedElement.current, 'collection-item')
         // 这里是需要个判断的，有 collection 的id就代表删除的是文件夹，否则删除的就是集合
-        console.log(parentElement.dataset.collection);
         if (parentElement.dataset.collection) {
           deleteFolderConfirm(parentElement.dataset.id,parentElement.dataset.collection)
         } else {
@@ -207,12 +196,10 @@ const Aside = (props) => {
               { returnSubFolderDom(item) }
             </div>
           </FolderAndRequest>
-          
         )
       })
     }
   }
-
   return(
     <CustomAside>
       <section>
@@ -292,7 +279,7 @@ const Aside = (props) => {
         state={ editCollectionOrFolderModal }
         data={ casuallyProps }
         changeState={ () => { setEditCollectionOrFolderModal(false) } }
-        upList={(listItem) => { /** 这里的回显是个问题，感觉有点复杂，先放在这等会再写 */ }}
+        upList={(listItem) => { renameCollectionAndFolder(listItem) }}
       />
     </CustomAside>
   )

@@ -3,7 +3,7 @@ const isDev = require('electron-is-dev')
 let mainWindow;
 
 app.on('ready', () => {
-    require('devtron').install()
+    // require('devtron').install()
     mainWindow = new BrowserWindow({
         width: 1024,
         height: 680,
@@ -13,5 +13,5 @@ app.on('ready', () => {
     })
     const urlLocation = isDev ? 'http://localhost:3000' : 'dummyurl'
     mainWindow.loadURL(urlLocation)
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 })

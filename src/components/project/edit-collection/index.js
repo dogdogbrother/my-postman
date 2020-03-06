@@ -3,6 +3,7 @@ import { Button, Modal, Form, Input } from 'antd';
 import { withRouter } from 'react-router-dom'
 
 import http from '../../../api'
+import { helperCloseAndReset } from '../../../tool/helpers'
 
 const EditCollection = (props) => {
   const [ loading, setLoading ] = useState(false);
@@ -25,9 +26,8 @@ const EditCollection = (props) => {
           ...values
         }
       }).then(res => {
-        // props.upList(res)
-        console.log(res);
-        props.changeState()
+        helperCloseAndReset(props)
+        props.upList(res)
         setLoading(false)
       }).catch(err => {
         setLoading(false)
@@ -43,16 +43,13 @@ const EditCollection = (props) => {
       sm: { span: 17 }
     },
   };
-
-  
-
   return(
     <Modal
       visible={ props.state }
       title={`编辑${folderOrCollection}`}
-      onCancel={ () => { props.changeState() } }
+      onCancel={() => { helperCloseAndReset(props) }}
       footer={[
-        <Button key="back" onClick={ () => props.changeState() }>
+        <Button key="back" onClick={() => { helperCloseAndReset(props) }}>
           取消
         </Button>,
         <Button key="submit" type="primary" loading={ loading } onClick={ handleSubmit }>
@@ -60,7 +57,6 @@ const EditCollection = (props) => {
         </Button>
       ]} 
     >
-      {/* defaultValue={} */}
       <Form { ...formItemLayout } className="login-form">
         <Form.Item label={`${folderOrCollection}名字`} >
           {getFieldDecorator('name', {

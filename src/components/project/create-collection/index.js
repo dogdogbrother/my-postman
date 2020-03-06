@@ -22,6 +22,7 @@ const CreateCollection = (props) => {
           ...values
         }
       }).then(res => {
+        props.form.resetFields()
         props.upList(res)
         props.changeState()
         setLoading(false)
@@ -44,9 +45,9 @@ const CreateCollection = (props) => {
     <Modal
       visible={ props.state }
       title="新建集合"
-      onCancel={ () => { props.changeState() } }
+      onCancel={ () => { props.changeState(); props.form.resetFields() } }
       footer={[
-        <Button key="back" onClick={ () => props.changeState() }>
+        <Button key="back" onClick={ () => { props.changeState(); props.form.resetFields()} }>
           取消
         </Button>,
         <Button key="submit" type="primary" loading={ loading } onClick={ handleSubmit }>

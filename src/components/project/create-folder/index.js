@@ -11,6 +11,7 @@ import { Button, Modal, Form, Input } from 'antd';
 import { withRouter } from 'react-router-dom'
 
 import http from '../../../api'
+import { helperCloseAndReset } from '../../../tool/helpers'
 
 const CreateFolder = (props) => {
   const [ loading, setLoading ] = useState(false);
@@ -39,7 +40,7 @@ const CreateFolder = (props) => {
         parm,
       }).then(res => {
         props.upList(res)
-        props.changeState()
+        helperCloseAndReset(props)
         setLoading(false)
       }).catch(err => {
         setLoading(false)
@@ -60,9 +61,9 @@ const CreateFolder = (props) => {
     <Modal
       visible={ props.state }
       title="新建文件夹"
-      onCancel={ () => { props.changeState() } }
+      onCancel={() => { helperCloseAndReset(props) }}
       footer={[
-        <Button key="back" onClick={ () => props.changeState() }>
+        <Button key="back" onClick={() => { helperCloseAndReset(props) }}>
           取消
         </Button>,
         <Button key="submit" type="primary" loading={ loading } onClick={ handleSubmit }>
