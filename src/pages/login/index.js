@@ -2,7 +2,9 @@ import React from 'react';
 import { Form, Icon, Input, Button, message } from 'antd';
 
 import http from '../../api'
+import { updateNoRead, updateUserInfo } from '../../store/user'
 import { LoginWrapper } from './style'
+
 const Login = (props) => {
   const { getFieldDecorator } = props.form
   const handleSubmit = e => {
@@ -15,10 +17,9 @@ const Login = (props) => {
           url:'/api/user/login',
           parm:values
         }).then(res => {
-          // 这里缺点东西，把返回的自身信息告诉全世界
+          updateNoRead(res.noReadNumber)
+          updateUserInfo(res.userInfo)
           props.history.push('/')
-        }).catch(err => {
-          message.error('登陆失败')
         })
       } else {
       }

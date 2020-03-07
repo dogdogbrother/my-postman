@@ -35,10 +35,9 @@ class Http {
         hide()
         if (error.response.status === 401) {
           message.warning('暂无权限操作,请登陆');
+        } else {
+          message.error(error.response.data.message || '未知错误');
         }
-        reject({
-          msg: error
-        })
       })
     })
   }

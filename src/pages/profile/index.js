@@ -38,7 +38,7 @@ const Layout = (props) => {
     }).then(res => {
       setProjectList(res.founders)
       setDevProjectList(res.members)
-    })
+    }).catch(() => props.history.push('/login')) 
   }
 
   const deleteConfirm = (id) => {

@@ -96,7 +96,6 @@ export const CollectionList = styled.ul`
     cursor: pointer;
   }
   .unfold-controller{
-    background-color: #fffeee;
     width: 100%;
     padding: 10px;
     i{
