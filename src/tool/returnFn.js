@@ -21,10 +21,19 @@ export const getParentNode = (node,parentClassName) => {
 }
 
 /**
-  *  @description: 传入一个数组和id，根据id来找到数组对应的属性
-  *  @param { object, string }: 第一个是dom节点，第二个是查找的父级的className
+  *  @description: 传入一个数组和id，根据id来找到数组对应的选项
+  *  @param { array, string }: 第一个是数组，第二个是匹配的id
   *  @author: sl
 */
-export const getIdItem = (node,parentClassName) => {
-  // 未实现
+export const returnFindById = (arr, id) => {
+  return arr.find((item => item._id === id))
+}
+
+/**
+  *  @description: 传入一个数组和id，根据id来删除掉数组对应的选项
+  *  @param { array, string }: 第一个是数组，第二个是匹配的id
+  *  @author: sl
+*/
+export const returnExcludeById = (arr, id) => {
+  return arr.filter((item => item._id !== id))
 }

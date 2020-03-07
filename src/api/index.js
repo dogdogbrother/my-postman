@@ -19,7 +19,6 @@ const settoken = () => {
 
 class Http {
 
-
   http({ url, method="get", parm={}, loding="" }) {
     settoken()
     return new Promise((resolve, reject) => {
@@ -37,9 +36,6 @@ class Http {
         if (error.response.status === 401) {
           message.warning('暂无权限操作,请登陆');
         }
-        // else {
-        //   return Promise.reject(error)
-        // }
         reject({
           msg: error
         })
@@ -48,4 +44,5 @@ class Http {
   }
 }
 let http = new Http()
+
 export default http.http

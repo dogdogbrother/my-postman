@@ -1,28 +1,47 @@
+/**
+  *  @description: 和添加文件夹的思路是很接近的
+  *  @author: sl
+  *  @update :sl(2020/03/07)
+*/
 import React, { useState } from 'react';
 import { Button, Modal, Form, Input } from 'antd';
+import { withRouter } from 'react-router-dom'
 
 import http from '../../../api'
 import { helperCloseAndReset } from '../../../tool/helpers'
 
-const Createproject = (props) => {
+const CreateRequest = (props) => {
   const [ loading, setLoading ] = useState(false);
 
   const { TextArea } = Input
   const { getFieldDecorator } = props.form
+
   const handleSubmit = e => {
     e.preventDefault();
     setLoading(true)
     props.form.validateFields((err, values) => {
       if(err) return
+      const parm = {
+        ...values,
+        project: props.match.params.id,
+        method: 'get'
+      }
+      // 假如有 collection 值，就说明是在文件夹上添加的
+      if (props.parent.collection) {
+        parm.folder = props.parent.id
+        parm.collectionId = props.parent.collection
+      } else {
+        parm.collectionId = props.parent.id
+      }
       http({
-        method:'post',
-        url:'/api/project/create',
-        parm:values
+        method: 'post',
+        url: '/api/request',
+        parm,
       }).then(res => {
-        props.upList(res);
+        props.upList(res)
         helperCloseAndReset(props)
         setLoading(false)
-      }).catch(err => {
+      }).catch(() => {
         setLoading(false)
       })
     })
@@ -40,7 +59,7 @@ const Createproject = (props) => {
   return(
     <Modal
       visible={ props.state }
-      title="新建项目"
+      title="新建接口"
       onCancel={() => { helperCloseAndReset(props) }}
       footer={[
         <Button key="back" onClick={() => { helperCloseAndReset(props) }}>
@@ -52,15 +71,15 @@ const Createproject = (props) => {
       ]} 
     >
       <Form { ...formItemLayout } className="login-form">
-        <Form.Item label="项目名字">
-          {getFieldDecorator('projectName', {
-            rules: [{ required: true, message: '请输入项目名' }],
+        <Form.Item label="接口名字">
+          {getFieldDecorator('name', {
+            rules: [{ required: true, message: '请输入接口名' }],
           })(
             <Input/>
           )}
         </Form.Item>
-        <Form.Item label="项目描述">
-        {getFieldDecorator('projectDescribe')(
+        <Form.Item label="接口描述">
+        {getFieldDecorator('describe')(
           <TextArea/>
         )}
         </Form.Item>
@@ -68,6 +87,6 @@ const Createproject = (props) => {
     </Modal>
   )
 }
-const FormCreateproject = Form.create({ name: 'creaProject' })(Createproject);
+const FormCreateRequest = Form.create({ name: 'createRequest' })(CreateRequest);
 
-export default FormCreateproject
+export default withRouter(FormCreateRequest)

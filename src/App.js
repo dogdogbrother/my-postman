@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch } from "react-router";
 import { BrowserRouter } from 'react-router-dom'
 import './styles/reset.css'
@@ -13,10 +13,21 @@ import Register from './pages/register'
 import Profile from './pages/profile'
 import Project from './pages/project'
 
-function App() {
+import http from './api'
+import { updateNoRead, updateUserInfo } from './store/user'
 
+function App() {
   
-  // 这里我检查一下，要是没有cookie我就让他跳转到login页面，不过暂时简单写一下代替下
+  useEffect(() => {
+    http({
+      method:'get',
+      url:'/api/user/gist'
+    }).then(res => {
+      updateNoRead(res.noReadNumber)
+      updateUserInfo(res.userInfo)
+    })
+  }, [])
+
   return (
     <div className="App">
       <BrowserRouter>

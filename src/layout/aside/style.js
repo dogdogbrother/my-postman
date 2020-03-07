@@ -1,10 +1,51 @@
 import styled from "styled-components";
-
+// --color-brand-primary: ##666666; patch
+// --color-brand-secondary: #097BED; put
+// --color-accent-error: #EB2013; delete
+// --color-accent-warning: #FFB400; post
+// --color-accent-success: #249C47; get
 export const CustomAside = styled.aside`
+  .request-item{
+    padding: 5px 0 5px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    p{
+      font-size: 11px;
+      text-align: center;
+      width: 48px;
+      font-weight: bold;
+    }
+  }
+  .patch {
+    color: #666666
+  }
+  .put {
+    color: #097BED
+  }
+  .delete {
+    color: #EB2013
+  }
+  .post {
+    color: #FFB400
+  }
+  .get {
+    color: #249C47
+  }
   width: 240px;
   box-sizing: border-box;
   height: calc(100vh - 48px);
   box-shadow: 0 0px 8px #ccc;
+  display: flex;
+  flex-direction: column;
+  .fill-all{
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .fill-all::-webkit-scrollbar {
+    display: none;
+  }
   section {
     height:80px;
     padding: 10px;
@@ -48,6 +89,8 @@ export const AddCollection = styled.div`
 
 export const CollectionList = styled.ul`
   margin: 0;
+  flex: 1;
+  overflow: scroll;
   .collection{
     border-bottom: 1px solid #eee;
     cursor: pointer;
@@ -91,10 +134,5 @@ export const FolderAndRequest = styled.div`
     .folders-item{
       padding: 10px 0 10px 0;
     }
-  }
-  .request{
-    padding: 10px 0 10px 10px;
-    line-height: 1;
-    font-size: 14px;
   }
 `

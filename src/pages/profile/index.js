@@ -13,8 +13,6 @@ import Header from '../../layout/header'
 import FormCreateproject from '../../components/project/create-project'
 import FormInviteMember from '../../components/project/invite-member'
 
-import { updateNoRead, updateUserInfo } from '../../store/user'
-
 // import { test } from '../socket'
 
 const Layout = (props) => {
@@ -32,14 +30,12 @@ const Layout = (props) => {
     props.history.push('/login')
   }
 
-  // 请求个人信息，请求我创建的集合，请求我参与的集合，后端处理好一起给过来。
-  const getAllInfo = () => {
+  // 请求项目信息和我参与的项目。
+  const getAllProject = () => {
     http({
       method:'get',
-      url:'/api/user/gist'
+      url:'/api/project/all'
     }).then(res => {
-      updateNoRead(res.noReadNumber)
-      updateUserInfo(res.userInfo)
       setProjectList(res.founders)
       setDevProjectList(res.members)
     })
@@ -63,6 +59,7 @@ const Layout = (props) => {
       }
     })
   }
+
   const quitConfirm = (id) => {
     confirm({
       title: '是否确认退出此项目?',
@@ -82,8 +79,9 @@ const Layout = (props) => {
   }
 
   useEffect(()=>{
-    getAllInfo()
-  },[])
+    getAllProject()
+  }, []) 
+
   const { Meta } = Card;
   
   return (

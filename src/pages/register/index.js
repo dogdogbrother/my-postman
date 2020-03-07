@@ -3,6 +3,8 @@ import { Form, Icon, Input, Button, message } from 'antd';
 
 import http from '../../api'
 import { LoginWrapper } from '../login/style'
+import { updateNoRead, updateUserInfo } from '../../store/user'
+
 const Register = (props) => {
   const { getFieldDecorator } = props.form
   const handleSubmit = e => {
@@ -14,7 +16,8 @@ const Register = (props) => {
           url:'/api/user/register',
           parm:values
         }).then(res => {
-          // 这里缺点东西，把返回的自身信息告诉全世界
+          updateNoRead([])
+          updateUserInfo(res)
           props.history.push('/')
         }).catch(() => {
           message.error('注册失败')
@@ -23,8 +26,6 @@ const Register = (props) => {
     })
   }
   const handleCheckPwd = (rule,value,callback) => {
-    console.log(rule);
-    
     let password = props.form.getFieldValue('password');
     if(password && password !== value){
       callback(new Error('两次密码输入不一致'))

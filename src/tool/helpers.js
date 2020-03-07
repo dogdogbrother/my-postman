@@ -61,16 +61,19 @@ export function helperFindByAttributeAndAssign(
   *  @author: sl
 */
 export function helperFindByValueAndAssign(tree, value, matchAttribute="_id", children="children") {
+  console.log(1);
   let target = null
   const recursion = (tree) => {
     tree.forEach(item => {     
-      if (item[matchAttribute] === value) {            
+      if (item[matchAttribute] === value) {        
         target = item
       } else {
-        recursion(item[children])
+        recursion(item[children] || [])
       }
     })
   }
   recursion(tree)
+  console.log(3);
+  
   return target
 }
