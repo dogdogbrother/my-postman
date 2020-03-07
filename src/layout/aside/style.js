@@ -5,6 +5,7 @@ import styled from "styled-components";
 // --color-accent-warning: #FFB400; post
 // --color-accent-success: #249C47; get
 export const CustomAside = styled.aside`
+  -webkit-user-select: none;
   .request-item{
     padding: 5px 0 5px 10px;
     font-size: 14px;
@@ -14,7 +15,17 @@ export const CustomAside = styled.aside`
       text-align: center;
       width: 48px;
       font-weight: bold;
+      margin: 0;
     }
+  }
+  .hover:hover {
+    background-color: #f5f5f5;
+  }
+  .active {
+    background-color: #ECECEC;
+  }
+  .active:hover {
+    background-color: #ECECEC;
   }
   .patch {
     color: #666666
@@ -97,7 +108,7 @@ export const CollectionList = styled.ul`
   }
   .unfold-controller{
     width: 100%;
-    padding: 10px;
+    padding: 5px 10px;
     i{
       margin: 10px 3px 0 0;
     }
@@ -123,7 +134,6 @@ export const FolderAndRequest = styled.div`
     margin-bottom: 0;
   }
   .folders{
-    padding-left: 10px;
     i{
       margin-right: 3px;
     }
@@ -131,7 +141,7 @@ export const FolderAndRequest = styled.div`
       line-height: 1;
     }
     .folders-item{
-      padding: 10px 0 10px 0;
+      padding: 10px 0 10px 10px;
     }
   }
 `

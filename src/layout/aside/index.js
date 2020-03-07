@@ -98,7 +98,6 @@ const Aside = (props) => {
   // 值得注意的是，这里的递归找父级的操作是可以复用的，后面要抽出来的
   const createFolder = (folder) => {
     let parent = helperFindByValueAndAssign(collectionList, casuallyProps.id)
-    console.log(4);
     parent.status = true
     parent.children.push(folder)
     let newCollectionList = collectionList.concat([])
@@ -109,6 +108,20 @@ const Aside = (props) => {
   const renameCollectionAndFolder = (item) => {
     const updateList = helperFindByAttributeAndAssign(collectionList, item, '_id', ['name', 'describe'])
     setCollectionList(updateList)
+  }
+
+  // 设置点击接口文件夹颜色变深的问题，首先我要递归清空掉所有的状态，然后再给她设置一下。
+  const setActive = (item) => {
+    const recursion = (arr) => {
+      arr.forEach(item => {
+        item.active = false
+        recursion(item.children || [])
+      })
+    }
+    recursion(collectionList)
+    item.active = true
+    let newCollectionList = collectionList.concat([])
+    setCollectionList(newCollectionList)
   }
 
   useEffect(() => {
@@ -186,20 +199,23 @@ const Aside = (props) => {
       return parent.children.map(item => {
         if (item.method) {
           return(
-            <div className="request-item flex-start" key={ item._id }>
+            <div 
+              className={`request-item flex-start ${item.active ? "active" : "hover"}`} 
+              key={ item._id }
+              onClick={() => { setActive(item) }}>
               <p className={item.method}>{ item.method }</p>
               <span>{ item.name }</span>
             </div>
           ) 
         } else {
           return(
-            <FolderAndRequest key={item._id}>
-              <div className="folders">
+            <FolderAndRequest key={item._id} style={{ paddingLeft: "10px" }}>
+              <div className="folders ">
                 <div 
-                  className="folders-item flex-start collection-item" 
+                  className={`folders-item flex-start collection-item ${item.active ? "active" : "hover"}`} 
                   data-id={item._id}
                   data-collection={item.collectionId}
-                  onClick={() => { setCollectionStatus(item) }}>
+                  onClick={() => { setCollectionStatus(item); setActive(item) }}>
                   <Icon type={ item.status ? 'caret-down' : 'caret-right'} />
                   <Icon type={ item.status ? 'folder-open' : 'folder'} theme="filled"/>
                   <p className="folders-name">
@@ -249,9 +265,9 @@ const Aside = (props) => {
               collectionList.map(collection => {
                 return(
                   <li className="collection" key={collection._id}>
-                    <div className="unfold-controller flex-start collection-item" 
+                    <div className={`unfold-controller flex-start collection-item ${collection.active ? "active" : "hover"}`}
                       data-id={collection._id}
-                      onClick={() => { setCollectionStatus(collection) }}>
+                      onClick={() => { setCollectionStatus(collection); setActive(collection) }}>
                       <Icon type={ collection.status ? 'caret-down' : 'caret-right'} />
                       <Icon type={ collection.status ? 'folder-open' : 'folder'} theme="filled"/>
                       <div className="collection-name">
@@ -261,7 +277,7 @@ const Aside = (props) => {
                     </div>
                     {
                       collection.status &&
-                      <div style={{ paddingLeft: "10px" }}>
+                      <div>
                         { returnSubFolderDom(collection) }
                       </div>
                     }
