@@ -9,14 +9,23 @@ const Createproject = (props) => {
 
   const { TextArea } = Input
   const { getFieldDecorator } = props.form
+
+  const projectId = props.project && props.project._id
+  const projectName = props.project && props.project.projectName
+  const projectDescribe = props.project && props.project.projectDescribe
+
   const handleSubmit = e => {
     e.preventDefault();
     setLoading(true)
     props.form.validateFields((err, values) => {
       if(err) return
+      
+      const method = props.project ? 'put' : 'post'
+      const url = '/api/project' + (props.project ? `/${projectId}` : '')
+
       http({
-        method:'post',
-        url:'/api/project/create',
+        method,
+        url,
         parm:values
       }).then(res => {
         props.upList(res);
@@ -40,7 +49,7 @@ const Createproject = (props) => {
   return(
     <Modal
       visible={ props.state }
-      title="新建项目"
+      title={`${props.project ? '编辑' : '新建'}项目`}
       onCancel={() => { helperCloseAndReset(props) }}
       footer={[
         <Button key="back" onClick={() => { helperCloseAndReset(props) }}>
@@ -54,13 +63,14 @@ const Createproject = (props) => {
       <Form { ...formItemLayout } className="login-form">
         <Form.Item label="项目名字">
           {getFieldDecorator('projectName', {
+            initialValue: projectName || '',
             rules: [{ required: true, message: '请输入项目名' }],
           })(
             <Input/>
           )}
         </Form.Item>
         <Form.Item label="项目描述">
-        {getFieldDecorator('projectDescribe')(
+        {getFieldDecorator('projectDescribe', { initialValue: projectDescribe || '' })(
           <TextArea/>
         )}
         </Form.Item>

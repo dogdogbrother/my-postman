@@ -6,24 +6,23 @@ import http from '../../../api'
 import { DeveloperList } from './style'
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 const InviteMember = (props) => {
   const [ optionList, setOptionList] = useState([]);
   const [ developerlist, setDeveloperlist] = useState([])
   const { getFieldDecorator } = props.form
-
+  
+  const projectId = props.project && props.project._id
   const handleSubmit = e => {
     e.preventDefault();
     props.form.validateFields((err, values) => {
       if(err) return
       http({
         method:'put',
-        url:`/api/project/${props.project}/member`,
+        url:`/api/project/${projectId}/member`,
         parm:values
       }).then(res => {
-        console.log(res);
-        console.log(developerlist);
-        
         setDeveloperlist([...developerlist,...res])
       })
     })
@@ -37,6 +36,27 @@ const InviteMember = (props) => {
       url:`/api/user/list?username=${value}&limit=5`
     }).then(res => {
       setOptionList(res)
+    })
+  }
+
+  // 删除一个项目的开发者
+  const deleteConfirm = (id) => {
+
+    confirm({
+      title: '是否踢出此开发者?',
+      content: '此用户将不能进入该项目进行开发与预览。',
+      okText: '踢出',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        // 这里我将写删除接口
+        http({
+          method:'delete',
+          url:`/api/project/member/${projectId}/${id}`
+        }).then(res => {
+          setDeveloperlist(res)
+        })
+      }
     })
   }
 
@@ -57,16 +77,17 @@ const InviteMember = (props) => {
     if (!props.state) return
     http({
       method:'get',
-      url:`/api/project/member/${props.project}`
+      url:`/api/project/member/${projectId}`
     }).then(res => {
       setDeveloperlist(res)
     })
-  }, [props.state])
+  }, [projectId, props.state])
+
   return(
     <Modal
       visible={ props.state }
       title="管理项目成员"
-      footer={null}
+      footer={ null }
       onCancel={ () => { props.form.resetFields();setOptionList([]); props.changeState() } }
     >
       <Form { ...formItemLayout } className="login-form flex-start" style={{ width: '100%' }}>
@@ -101,7 +122,7 @@ const InviteMember = (props) => {
                 <p className="username">{item.username}</p>
                 <p className="email">{item.email}</p>
                 <Tag color="orange">开发者</Tag>
-                <span className="delete">delete</span>
+                <span className="delete" onClick={() => { deleteConfirm(item._id) }}>delete</span>
               </li>
             )
           })

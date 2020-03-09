@@ -17,7 +17,6 @@ const Header = (props) => {
   //  关于rxjs的
   const noReadNumber = useObservable(() => noRead.asObservable()) || noRead.value
   const rxUserInfo = useObservable(() => userInfo.asObservable()) || userInfo.value
-
   
   const [ popoverStatus, setpopoverStatus ] = useState(false) //  点击头像展开的小对话框
   const [ drawerStatus, setDrawerStatus ] = useState(false)  // 点击查看通知右侧的抽屉
@@ -99,6 +98,13 @@ const Header = (props) => {
         <Icon type="safety" className="m-r-10"/>
           <span>查看通知 { noReadNumber ? `(${noReadNumber}条未读)` : ""}</span>
       </div>
+      {
+        props.match.params.id && 
+        <div className="point" onClick={() => { props.history.push("/") }}>
+          <Icon type="rollback" className="m-r-10"/>
+            <span>返回项目列表</span>
+        </div>
+      }
       <div className="point" onClick={ () => { logout() } }>
         <Icon type="poweroff" className="m-r-10 point"/>
         <span>注销</span>
@@ -120,7 +126,7 @@ const Header = (props) => {
           trigger="click"
           visible={ popoverStatus }
           onVisibleChange={ val => { setpopoverStatus(val) } }>
-          <Badge dot>
+          <Badge dot={ noReadNumber ? true : false }>
             <Avatar 
               shape="square"
               style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}

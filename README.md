@@ -2,7 +2,6 @@
 ```ssh
 npm run dev
 ```
-开启运行环境git
+## TUDO
 
-# TUDO
-在写头部，借鉴apizza
+没有信息，头部不要有红点

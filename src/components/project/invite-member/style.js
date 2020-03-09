@@ -19,6 +19,7 @@ export const DeveloperList = styled.ul`
     margin-left: 10px;
     color: #ff4d4f;
     cursor: pointer;
+    user-select: none;
     &:hover{
       color: #f00000;
     }

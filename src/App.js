@@ -6,7 +6,7 @@ import './styles/global-margin-padding.css'
 import './styles/global-flex.css'
 import './styles/others.css'
 
-import './socket'
+// import './socket'
 
 import Login from './pages/login'
 import Register from './pages/register'

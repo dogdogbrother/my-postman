@@ -4,7 +4,7 @@
   *  @update :sl(2020/02/18)
 */
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Icon, Avatar, Modal, Tooltip } from 'antd';
+import { Button, Card, Icon, Avatar, Modal, Tooltip, Empty } from 'antd';
 
 
 import http from '../../api'
@@ -22,23 +22,11 @@ const Layout = (props) => {
   const [ projectList, setProjectList ] = useState([]);  //  渲染我的项目的数组
   const [ devProjectList, setDevProjectList ] = useState([]);  //  渲染我参与的项目的数组
 
-  const [ currentProjectId, setCurrentProjectId ] = useState(null);  //  当然我操作的项目的id，包括我的和参与的。每当操作项目的时候就会更新
+  const [ currentProject, setCurrentProject ] = useState(null);  //  当然我操作的项目，包括我的和参与的。每当操作项目的时候就会更新
   const { confirm } = Modal;
- 
 
   if(!document.cookie) {
     props.history.push('/login')
-  }
-
-  // 请求项目信息和我参与的项目。
-  const getAllProject = () => {
-    http({
-      method:'get',
-      url:'/api/project/all'
-    }).then(res => {
-      setProjectList(res.founders)
-      setDevProjectList(res.members)
-    }).catch(() => props.history.push('/login')) 
   }
 
   const deleteConfirm = (id) => {
@@ -49,7 +37,6 @@ const Layout = (props) => {
       okType: 'danger',
       cancelText: '取消',
       onOk() {
-        // 这里我将写删除接口
         http({
           method:'delete',
           url:`/api/project/${id}`
@@ -79,8 +66,15 @@ const Layout = (props) => {
   }
 
   useEffect(()=>{
-    getAllProject()
-  }, []) 
+    // 请求全部的项目信息
+    http({
+      method:'get',
+      url:'/api/project/all'
+    }).then(res => {
+      setProjectList(res.founders)
+      setDevProjectList(res.members)
+    }).catch(() => props.history.push('/login')) 
+  }, [props.history]) 
 
   const { Meta } = Card;
   
@@ -88,13 +82,14 @@ const Layout = (props) => {
     <>
       <Header />
       <MyProductMain>
-        <Button type="primary" icon="plus" size="large" onClick={ () => { setAddProjectModal(true) } }>
+        <Button type="primary" icon="plus" size="large" onClick={ () => { setCurrentProject(null); setAddProjectModal(true) } }>
           新建项目
         </Button>
         <div className="block">
           <p className="title">我拥有的项目</p>
           <CardList>
             {
+              projectList.length ?
               projectList.map((item) => (
                 <Card
                   className="card"
@@ -106,9 +101,11 @@ const Layout = (props) => {
                       onClick={() => { props.history.push(`/project/${item._id}`) }}>
                       <Icon type="setting" key="setting" />
                     </Tooltip>,
-                    <Icon type="edit" key="edit" />,
+                    <Tooltip placement="top" title="编辑项目" arrowPointAtCenter>
+                      <Icon type="edit" key="edit" onClick={ () => { setCurrentProject(item); setAddProjectModal(true) } }/>
+                    </Tooltip>,
                     <Tooltip placement="top" title="成员管理" arrowPointAtCenter>
-                      <Icon type="branches" key="branches" onClick={ () => { setCurrentProjectId(item._id); setInviteModal(true) } }/>
+                      <Icon type="branches" key="branches" onClick={ () => { setCurrentProject(item); setInviteModal(true) } }/>
                     </Tooltip>,
                     <Tooltip placement="top" title="删除项目" arrowPointAtCenter>
                       <Icon type="delete" key="delete" onClick={ () => { deleteConfirm(item._id) } }/>
@@ -121,7 +118,8 @@ const Layout = (props) => {
                     description={ item.projectDescribe }
                   />
                 </Card>
-              ))
+              )) :
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ width: "100%" }} description="没有你建立的项目"/>
             }
           </CardList>
         </div>
@@ -129,6 +127,7 @@ const Layout = (props) => {
           <p className="title">我参与的项目</p>
           <CardList>
             {
+              devProjectList.length ?
               devProjectList.map(project => {
                 return(
                   <Card
@@ -151,20 +150,22 @@ const Layout = (props) => {
                     />
                   </Card>
                 )
-              })
+              }) :
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} style={{ width: "100%" }} description="没有你参与的项目"/>
             }
           </CardList>
         </div>
       </MyProductMain>
-      {/* 创建项目的对话框，里面是个form表单 */}
+      {/* 创建项目的对话框，里面是个form表单,优化一下，增加编辑功能 */}
       <FormCreateproject 
         state={ addProjectModal } 
+        project={ currentProject }
         changeState={ () => {setAddProjectModal(false)} }
         upList={ (list) => { setProjectList(list) } }
       />
       {/* 邀请项目成员的对话框，里面是个form表单 */}
       <FormInviteMember
-        project={ currentProjectId }
+        project={ currentProject }
         state={ inviteModal } 
         changeState={ () => { setInviteModal(false)} }
       />
