@@ -9,13 +9,14 @@ import { Input, Icon, Modal } from 'antd';
 
 import http from '../../api'
 import { getParentNode, returnFindById, returnExcludeById } from '../../tool/returnFn'
-import { helperFindByAttributeAndAssign, helperFindByValueAndAssign } from '../../tool/helpers'
+import { helperFindByAttributeAndAssign, helperFindByValueAndAssign, helperFindByIdAndRemove } from '../../tool/helpers'
 import { CustomAside, CustomTabs, AddCollection, CollectionList, FolderAndRequest } from './style'
 
 import FormCreateCollection from '../../components/project/create-collection'
 import FormCreateFolder from '../../components/project/create-folder'
 import FormEditFolder from '../../components/project/edit-collection'
 import FormCreateRequest from '../../components/project/create-request'
+import FormEditRequest from '../../components/project/edit-request'
 
 const { remote } = window.require('electron')
 const { Search } = Input;
@@ -29,8 +30,8 @@ const Aside = (props) => {
   const [ addCollectionModal, setAddCollectionModal ] = useState(false);  //  控制添加集合的对话框的变量
   const [ addFolderModal, setAddFolderModal ] = useState(false);  //  控制添加文件夹的对话框的变量
   const [ editCollectionOrFolderModal, setEditCollectionOrFolderModal ] = useState(false);  //  控制编辑集合的对话框的变量
-  const [ addRequestModal, setAddRequestModal ] = useState(false);  //  控制添加文件夹的对话框的变量
-
+  const [ addRequestModal, setAddRequestModal ] = useState(false);  //  控制添加接口的对话框的变量
+  const [ editRequestModal, setEditRequestModal ] = useState(false);  //  控制编辑接口的对话框的变量
   const [ casuallyProps, setCasuallyProps ] = useState(null) // 用一个临时变量，就是当你右键操作的时候，这个值就被赋上了，本身是什么无所谓。
   let clickedElement = useRef(null)
 
@@ -94,6 +95,23 @@ const Aside = (props) => {
       }
     })
   }
+  const deleteRequestConfirm = (id) => {
+    confirm({
+      title: '是否确认删除此接口?',
+      content: '删除后将不可找回。',
+      okText: '确认删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        http({
+          method:'delete',
+          url:`/api/request/${id}`
+        }).then(() => {
+          setCollectionList(helperFindByIdAndRemove(collectionList, id))
+        })
+      }
+    })
+  }
   // 这个函数是从添加dialog里面弹出后的内容，根据记录的id，来递归出真正的父级，然后让他status为true，并且push
   // 值得注意的是，这里的递归找父级的操作是可以复用的，后面要抽出来的
   const createFolder = (folder) => {
@@ -105,7 +123,7 @@ const Aside = (props) => {
   }
    
   // 用于重命名集合和文件夹
-  const renameCollectionAndFolder = (item) => {
+  const renameCollectionAndFolderAndRequest = (item) => {
     const updateList = helperFindByAttributeAndAssign(collectionList, item, '_id', ['name', 'describe'])
     setCollectionList(updateList)
   }
@@ -129,62 +147,95 @@ const Aside = (props) => {
   }, [])
 
   useEffect(() => {
-    const menu = new Menu()
-    menu.append(new MenuItem({
-      label: "修改名称和描述",
+    const collectionAndFolderConfig = [{
+        label: "修改名称和描述",
+        click: () => {
+          const parentElement = getParentNode(clickedElement.current, 'collection-item')
+          // 我要拿到id就够了，递归找到这个原对象，赋值给临时变量，拿去当props
+          const update = helperFindByValueAndAssign(collectionList, parentElement.dataset.id)
+          setCasuallyProps(update)
+          setEditCollectionOrFolderModal(true)
+        }
+      }, {
+        label: "添加文件夹",
+        click: () => {
+          const parentElement = getParentNode(clickedElement.current, 'collection-item')
+          setCasuallyProps({
+            id: parentElement.dataset.id,
+            collection: parentElement.dataset.collection
+          })
+          setAddFolderModal(true)
+        }
+      }, {
+        label: "添加接口",
+        click: () => {
+          // 添加接口和添加文件夹是有点像的
+          const parentElement = getParentNode(clickedElement.current, 'collection-item')
+          setCasuallyProps({
+            id: parentElement.dataset.id,
+            collection: parentElement.dataset.collection
+          })
+          setAddRequestModal(true)
+        }
+      }, {
+        label: "删除",
+        click: () => {
+          const parentElement = getParentNode(clickedElement.current, 'collection-item')
+          // 这里是需要个判断的，有 collection 的id就代表删除的是文件夹，否则删除的就是集合
+          if (parentElement.dataset.collection) {
+            deleteFolderConfirm(parentElement.dataset.id,parentElement.dataset.collection)
+          } else {
+            deleteCollectionConfirm(parentElement.dataset.id)
+          }
+        }
+    }]
+    const requestConfig = [{
+      label: "修改接口名和描述",
       click: () => {
-        const parentElement = getParentNode(clickedElement.current, 'collection-item')
-        // 我要拿到id就够了，递归找到这个原对象，赋值给临时变量，拿去当props
+        const parentElement = getParentNode(clickedElement.current, 'request-item')
+          // 我要拿到id就够了，递归找到这个原对象，赋值给临时变量，拿去当props
         const update = helperFindByValueAndAssign(collectionList, parentElement.dataset.id)
         setCasuallyProps(update)
-        setEditCollectionOrFolderModal(true)
+        setEditRequestModal(true)
       }
-    }))
-    menu.append(new MenuItem({
-      label: "添加文件夹",
-      click: () => {
-        const parentElement = getParentNode(clickedElement.current, 'collection-item')
-        setCasuallyProps({
-          id: parentElement.dataset.id,
-          collection: parentElement.dataset.collection
-        })
-        setAddFolderModal(true)
-      }
-    }))
-    menu.append(new MenuItem({
-      label: "添加接口",
-      click: () => {
-        // 添加接口和添加文件夹是有点像的
-        const parentElement = getParentNode(clickedElement.current, 'collection-item')
-        setCasuallyProps({
-          id: parentElement.dataset.id,
-          collection: parentElement.dataset.collection
-        })
-        setAddRequestModal(true)
-      }
-    }))
-    menu.append(new MenuItem({
+    }, {
       label: "删除",
       click: () => {
-        const parentElement = getParentNode(clickedElement.current, 'collection-item')
+        const parentElement = getParentNode(clickedElement.current, 'request-item')
         // 这里是需要个判断的，有 collection 的id就代表删除的是文件夹，否则删除的就是集合
-        if (parentElement.dataset.collection) {
-          deleteFolderConfirm(parentElement.dataset.id,parentElement.dataset.collection)
-        } else {
-          deleteCollectionConfirm(parentElement.dataset.id)
-        }
+        deleteRequestConfirm(parentElement.dataset.id)
       }
-    }))
+    }]
+    const folderMenu = new Menu()
+    collectionAndFolderConfig.forEach(config => {
+      folderMenu.append(new MenuItem(config))
+    })
+    const requestMenu = new Menu()
+    requestConfig.forEach(config => {
+      requestMenu.append(new MenuItem(config))
+    })
+
     const handleContextMenu = (e) => {
-      const doms = document.querySelectorAll('.collection-item') 
+      const forlderDoms = document.querySelectorAll('.collection-item') 
       let isExist = false
-      doms.forEach(dom => {
+      forlderDoms.forEach(dom => {
         if (dom.contains(e.target)) isExist = true
       })
       if(isExist) {
         isExist = false
         clickedElement.current = e.target
-        menu.popup({window: remote.getCurrentWindow()})
+        folderMenu.popup({window: remote.getCurrentWindow()})
+      } else {
+        // 上面的操作已经把文件夹和集合的右键菜单判断好了，这里再判断一圈看看是不是接口的
+        const requestDoms = document.querySelectorAll('.request-item')
+        requestDoms.forEach(dom => {
+          if (dom.contains(e.target)) isExist = true
+        }) 
+        if(isExist) {
+          isExist = false
+          clickedElement.current = e.target
+          requestMenu.popup({window: remote.getCurrentWindow()})
+        }
       }
     }
     window.addEventListener('contextmenu', handleContextMenu)
@@ -202,6 +253,7 @@ const Aside = (props) => {
             <div 
               className={`request-item flex-start ${item.active ? "active" : "hover"}`} 
               key={ item._id }
+              data-id={ item._id }
               onClick={() => { setActive(item) }}>
               <p className={item.method}>{ item.method }</p>
               <span>{ item.name }</span>
@@ -306,7 +358,7 @@ const Aside = (props) => {
         state={ editCollectionOrFolderModal }
         data={ casuallyProps }
         changeState={ () => { setEditCollectionOrFolderModal(false) } }
-        upList={(listItem) => { renameCollectionAndFolder(listItem) }}
+        upList={(listItem) => { renameCollectionAndFolderAndRequest(listItem) }}
       />
       {/* 创建接口的对话框*/}
       <FormCreateRequest
@@ -314,6 +366,13 @@ const Aside = (props) => {
         parent={ casuallyProps } // 这个地方有问题啊，我怎么判断每次我拿到的父级呢，老方法，点击添加的时候单独弄个变量
         changeState={ () => { setAddRequestModal(false) } }
         upList={(request) => { createFolder(request) }}
+      />
+      {/* 修改接口的对话框 */}
+      <FormEditRequest
+        state={ editRequestModal }
+        data={ casuallyProps }
+        changeState={ () => { setEditRequestModal(false) } }
+        upList={(listItem) => { renameCollectionAndFolderAndRequest(listItem) }}
       />
     </CustomAside>
   )

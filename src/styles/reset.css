@@ -32,13 +32,10 @@ body {
   outline: 1;
 }
 
-nav ul {
+ul {
   list-style:none;
 }
 
-blockquote, q {
-  quotes:none;
-}
 
 
 a {
@@ -50,47 +47,8 @@ a {
   background:transparent;
 }
 
-ins {
-  background-color:#ff9;
-  color:#000;
-  text-decoration:none;
-}
 
-mark {
-  background-color:#ff9;
-  color:#000;
-  font-style:italic;
-  font-weight:bold;
-}
-
-del {
-  text-decoration: line-through;
-}
-
-abbr[title], dfn[title] {
-  border-bottom:1px dotted #000;
-  cursor:help;
-}
-
-table {
-  border-collapse:collapse;
-  border-spacing:0;
-}
-
-hr {
-  display:block;
-  height:1px;
-  border:0;
-  border-top:1px solid #cccccc;
-  margin:1em 0;
-  padding:0;
-}
 input, select {
   vertical-align:middle;
 }
 
-body>div.container .left{
-  overflow: hidden;
-  width: 68.27524576%;
-  float: left;
-}

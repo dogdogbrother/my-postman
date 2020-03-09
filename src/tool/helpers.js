@@ -3,7 +3,7 @@
   *  @author: sl
   *  @update :sl(2020/03/06)
 */
-
+import { returnFindById, returnExcludeById } from './returnFn'
 /**
   *  @description: 关闭对话框并且清楚对话框里面的form表单的值。不过这个对外部的属性有要求，关闭对话框的函数比较名为changeState
   *  @param { object }: 执行props下的 changeState和form.resetFields
@@ -45,7 +45,7 @@ export function helperFindByAttributeAndAssign(
           item[assignAttribute] = paramObject[assignAttribute]
         }
       }
-      recursion(item[children])
+      recursion(item[children] || [])
     })
   }
   recursion(tree)
@@ -61,7 +61,6 @@ export function helperFindByAttributeAndAssign(
   *  @author: sl
 */
 export function helperFindByValueAndAssign(tree, value, matchAttribute="_id", children="children") {
-  console.log(1);
   let target = null
   const recursion = (tree) => {
     tree.forEach(item => {     
@@ -72,8 +71,28 @@ export function helperFindByValueAndAssign(tree, value, matchAttribute="_id", ch
       }
     })
   }
-  recursion(tree)
-  console.log(3);
-  
+  recursion(tree)  
   return target
+}
+
+/**
+  *  @description: 根据一个值找到tree中的一个对象，这个对象包含了你要删除的值。总结就是为了删除一个值要先找到他父级。
+  *  @param { array }: 就是需要递归的树
+  *  @param { string }: 需要匹配的id值
+  *  @param { string }: tree下一级数组的属性名，默认是childer
+  *  @author: sl
+*/
+export function helperFindByIdAndRemove(tree, id, children="children") {
+  const recursion = (tree) => {
+    tree.forEach(item => {
+      const isExist = returnFindById(item[children], id)
+      if (isExist) {
+        item[children] = returnExcludeById(item[children], id)
+      } else {
+        recursion(item[children] || [])
+      }
+    })
+  }
+  recursion(tree)  
+  return tree.concat([])
 }

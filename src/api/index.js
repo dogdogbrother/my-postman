@@ -21,18 +21,18 @@ class Http {
 
   http({ url, method="get", parm={}, loding="" }) {
     settoken()
-    return new Promise((resolve, reject) => {
-      const hide = message.loading(loding, 0);
+    return new Promise((resolve) => {
+      // const hide = message.loading(loding, 0);
       axios({
         method,
         url,
         data:parm,
         'responseType': 'json'
       }).then(res => {
-        hide()
+        // hide()
         resolve(res.data)
       }).catch(error => {
-        hide()
+        // hide()
         if (error.response.status === 401) {
           message.warning('暂无权限操作,请登陆');
         } else {

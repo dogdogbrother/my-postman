@@ -8,3 +8,19 @@
   height: 18px;
   margin-right: 5px;
 }
+
+.patch {
+  color: #666666
+}
+.put {
+  color: #097BED
+}
+.delete {
+  color: #EB2013
+}
+.post {
+  color: #FFB400
+}
+.get {
+  color: #249C47
+}
