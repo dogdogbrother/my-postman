@@ -6,7 +6,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Icon, Avatar, Modal, Tooltip, Empty } from 'antd';
 
-
 import http from '../../api'
 import { MyProductMain, CardList } from './style'
 import Header from '../../layout/header'
@@ -16,7 +15,6 @@ import FormInviteMember from '../../components/project/invite-member'
 // import { test } from '../socket'
 
 const Layout = (props) => {
-
   const [ addProjectModal, setAddProjectModal ] = useState(false);  //  控制添加项目的对话框的变量
   const [ inviteModal, setInviteModal ] = useState(false);  //  控制要求组员的对话框的变量
   const [ projectList, setProjectList ] = useState([]);  //  渲染我的项目的数组
@@ -94,7 +92,7 @@ const Layout = (props) => {
                 <Card
                   className="card"
                   style={{ width: 300, margin: 10 }}
-                  key={ item.projectName }
+                  key={ item._id }
                   actions={[
                     <Tooltip 
                       placement="top" title="进入项目" arrowPointAtCenter
@@ -114,8 +112,8 @@ const Layout = (props) => {
                   >
                   <Meta
                     avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                    title={ item.projectName }
-                    description={ item.projectDescribe }
+                    title={ item.name }
+                    description={ item.describe }
                   />
                 </Card>
               )) :
@@ -145,8 +143,8 @@ const Layout = (props) => {
                     >
                     <Meta
                       avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-                      title={project.projectName}
-                      description={project.projectDescribe}
+                      title={project.name}
+                      description={project.describe}
                     />
                   </Card>
                 )

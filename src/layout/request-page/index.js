@@ -13,6 +13,7 @@ import RequestInfoPage from '../../components/request/request-info'
 const RequestPage = (props) => {
   return(
     <div style={{flex: "1", display: "flex", flexDirection: "column"}}>
+      {/* header和InfoPage是有耦合关系的，上面控制下面，整体掌控不好弄，还是要整个rxjs*/}
       <ControlHeader></ControlHeader>
       <RequestInfoPage></RequestInfoPage>
     </div>

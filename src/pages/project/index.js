@@ -20,7 +20,7 @@ const Project = () => {
       <Header/>
       <Main className="flex-start">
         <Aside></Aside>
-        <RequestPage>123</RequestPage>
+        <RequestPage></RequestPage>
       </Main>
     </div>
   )

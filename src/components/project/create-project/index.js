@@ -11,8 +11,8 @@ const Createproject = (props) => {
   const { getFieldDecorator } = props.form
 
   const projectId = props.project && props.project._id
-  const projectName = props.project && props.project.projectName
-  const projectDescribe = props.project && props.project.projectDescribe
+  const projectName = props.project && props.project.name
+  const projectDescribe = props.project && props.project.describe
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -62,7 +62,7 @@ const Createproject = (props) => {
     >
       <Form { ...formItemLayout } className="login-form">
         <Form.Item label="项目名字">
-          {getFieldDecorator('projectName', {
+          {getFieldDecorator('name', {
             initialValue: projectName || '',
             rules: [{ required: true, message: '请输入项目名' }],
           })(
@@ -70,7 +70,7 @@ const Createproject = (props) => {
           )}
         </Form.Item>
         <Form.Item label="项目描述">
-        {getFieldDecorator('projectDescribe', { initialValue: projectDescribe || '' })(
+        {getFieldDecorator('describe', { initialValue: projectDescribe || '' })(
           <TextArea/>
         )}
         </Form.Item>

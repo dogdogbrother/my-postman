@@ -11,6 +11,7 @@ import http from '../../api'
 import { getParentNode, returnFindById, returnExcludeById } from '../../tool/returnFn'
 import { helperFindByAttributeAndAssign, helperFindByValueAndAssign, helperFindByIdAndRemove } from '../../tool/helpers'
 import { CustomAside, CustomTabs, AddCollection, CollectionList, FolderAndRequest } from './style'
+import { addRequestInfoByAside } from '../../store/request'
 
 import FormCreateCollection from '../../components/project/create-collection'
 import FormCreateFolder from '../../components/project/create-folder'
@@ -24,6 +25,8 @@ const { Menu, MenuItem } = remote
 const { confirm } = Modal;
 
 const Aside = (props) => {
+
+  const [ projectInfo, setProjectInfo ] = useState({name: '', describe:''}) // 左上角的项目信息
   const [ tabIndex, setTabIndex ] = useState(1) //  用于历史还是列表的tab切换
   // 关于列表中的status属性我得单独说明一下，本身是没有的，但是如果你让他点击过了他就有了
   const [ collectionList, setCollectionList ] = useState([]) 
@@ -34,12 +37,6 @@ const Aside = (props) => {
   const [ editRequestModal, setEditRequestModal ] = useState(false);  //  控制编辑接口的对话框的变量
   const [ casuallyProps, setCasuallyProps ] = useState(null) // 用一个临时变量，就是当你右键操作的时候，这个值就被赋上了，本身是什么无所谓。
   let clickedElement = useRef(null)
-
-  const getList = () => {
-    http({ url: `/api/collection/${props.match.params.id}` }).then(res => {
-      setCollectionList(res)
-    })
-  }
 
   const setCollectionStatus = (collection)=> { 
     collection.status = !collection.status
@@ -142,9 +139,19 @@ const Aside = (props) => {
     setCollectionList(newCollectionList)
   }
 
+  // 选择了接口，不仅要处理颜色变深的问题，还有让你的右侧有所显示。逻辑在rxjs中了，只要把obj传过去就行了。
+  const selectReuqest = (item) => {
+    addRequestInfoByAside(item)
+  }
+
   useEffect(() => {
-    getList() // 其实这个是不对的，因为你不能只有集合，你还要有集合下面的，但是为了测试，暂时就这样
-  }, [])
+    http({ url: `/api/collection/${props.match.params.id}` }).then(res => {
+      setCollectionList(res)
+    })
+    http({ url: `/api/project/${props.match.params.id}` }).then(res => {
+      setProjectInfo(res)
+    })
+  }, [props.match.params.id])
 
   useEffect(() => {
     const collectionAndFolderConfig = [{
@@ -254,7 +261,7 @@ const Aside = (props) => {
               className={`request-item flex-start ${item.active ? "active" : "hover"}`} 
               key={ item._id }
               data-id={ item._id }
-              onClick={() => { setActive(item) }}>
+              onClick={() => { setActive(item); selectReuqest(item) }}>
               <p className={item.method}>{ item.method }</p>
               <span>{ item.name }</span>
             </div>
@@ -285,8 +292,8 @@ const Aside = (props) => {
   return(
     <CustomAside>
       <section>
-        <h2>项目1接口</h2>
-        <p>这个项目的描述</p>
+        <h2 className="ellipsis">{projectInfo.name}</h2>
+        <p className="ellipsis">{projectInfo.describe}</p>
       </section>
       {/* 这个div就是单独放个search输入框 */}
       <div className='search'>

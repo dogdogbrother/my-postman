@@ -24,3 +24,9 @@
 .get {
   color: #249C47
 }
+/* 省略号的元素加上这个 */
+.ellipsis{
+  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
