@@ -3992,10 +3992,10 @@ electron-to-chromium@^1.3.341, electron-to-chromium@^1.3.349:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.349.tgz#663f26a69d348a462df47b4d7ab162a2f29bbcb7"
   integrity sha512-uEb2zs6EJ6OZIqaMsCSliYVgzE/f7/s1fLWqtvRtHg/v5KBF2xds974fUnyatfxIDgkqzQVwFtam5KExqywx0Q==
 
-electron@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-6.1.1.tgz#28e6ce60c88f236adf7658173e55d802fc9ef693"
-  integrity sha512-OwFJSgPdKNyCnMl7mZvWkYpSh9gMb2jNSXoORX4NivxjL8ALhpMKFJ2YIIfLYXi3lGkmr05VAiTzuTBludSdjw==
+electron@6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-6.0.1.tgz#9dcdb3773e933890f432403f2ff5851cffbea126"
+  integrity sha512-XY69rI5IThIxsOS2BD+1ZkHE9hqkm4xN5a3WQFSmFRr2by4q5CnIe9vXmptlouGPTLs3tb7ySX/+K9CvH3szvg==
   dependencies:
     "@types/node" "^10.12.18"
     electron-download "^4.1.0"
@@ -11310,9 +11310,9 @@ typedarray@^0.0.6:
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
 ua-parser-js@^0.7.18:
-  version "0.7.21"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.21.tgz#853cf9ce93f642f67174273cc34565ae6f308777"
-  integrity sha512-+O8/qh/Qj8CgC6eYBVBykMrNtp5Gebn4dlGD/kKXVkJNDwyrAwSIqwz8CDf+tsAIWVycKcku6gIXJ0qwx/ZXaQ==
+  version "0.7.28"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
+  integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
